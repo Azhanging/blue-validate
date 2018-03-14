@@ -1,6 +1,6 @@
 {
   "name": "blue-validate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "validate",
   "main": "./index.js",
   "scripts": {
@@ -17,7 +17,6 @@
   "author": "Blue",
   "license": "ISC",
   "devDependencies": {
-    "axios": "^0.18.0",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-runtime": "^6.22.0",
@@ -40,5 +39,8 @@
   "bugs": {
     "mail": "azhanging@qq.com",
     "web": "https://github.com/Azhanging/blue-validate"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
   }
 }
