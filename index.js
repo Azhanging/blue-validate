@@ -1,1 +1,2 @@
-export default require('./dist/js/blue-validate.min');
+const Validate = require('./dist/static/js/blue-validate');
+module.exports = Validate;

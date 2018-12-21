@@ -37,7 +37,7 @@ export default function valid(el){
         }).then((res) => {
           const data = res.data;
           result = {
-            status: data == 1 ? true : false ,
+            status: data.status == 1 ? true : false ,
             info: data.info || 'error'
           };
           resolve(result);
