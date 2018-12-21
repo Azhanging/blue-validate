@@ -50,6 +50,4 @@ initInfo.call(Validate);
 
 Validate.config = config;
 
-window.Validate = Validate;
-
 export default Validate;

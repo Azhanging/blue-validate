@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.0.11
+ * blue-validate.js 1.0.12
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Fri, 21 Dec 2018 10:15:40 GMT
+ * time:Fri, 21 Dec 2018 10:21:10 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -155,8 +155,6 @@ __WEBPACK_IMPORTED_MODULE_1__type__["c" /* setType */].call(Validate);
 __WEBPACK_IMPORTED_MODULE_2__info__["a" /* initInfo */].call(Validate);
 
 Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
-
-window.Validate = Validate;
 
 /* harmony default export */ __webpack_exports__["a"] = (Validate);
 
