@@ -3,13 +3,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Title</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,viewport-fit=cover" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,viewport-fit=cover"/>
 	</head>
 	<body>
 		<div id="app">
 			<form action="" @submit="submit" class="v-m">
 				<div class="pd-10">
-					<span>textarea:</span><textarea name="textarea" class="g-input" id="" cols="30" rows="10"  v-blue-validate="{validate:[{type:'*'}]}"></textarea>
+					<span>textarea:</span><textarea name="textarea" class="g-input" id="" cols="30" rows="10" v-blue-validate="valid"></textarea>
+
 				</div>
 
 				<div class="pd-10">
@@ -111,10 +112,13 @@
       new Vue({
         el: "#app",
         data: {
-          input: ''
+          input: '',
+          valid: {
+
+          }
         },
         methods: {
-          textValidate:function(data) {
+          textValidate: function (data) {
             return {
               info: '输入有误有问题',
               status: data.length === 11

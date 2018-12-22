@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.0.12
+ * blue-validate.js 1.1.1
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Fri, 21 Dec 2018 10:21:10 GMT
+ * time:Sat, 22 Dec 2018 08:05:30 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -87,16 +87,18 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__type__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__info__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__validate_form_validate__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__css_index__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__update__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__info__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__validate_form_validate__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__css_index__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__config__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils__ = __webpack_require__(12);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 
 
 
@@ -114,13 +116,15 @@ var Validate = function () {
   _createClass(Validate, null, [{
     key: 'addType',
     value: function addType(typeName, type) {
-      __WEBPACK_IMPORTED_MODULE_1__type__["a" /* addType */].call(this, typeName, type);
+      __WEBPACK_IMPORTED_MODULE_2__type__["a" /* addType */].call(this, typeName, type);
     }
   }, {
     key: 'install',
     value: function install(Vue) {
 
-      Object(__WEBPACK_IMPORTED_MODULE_4__css_index__["a" /* initCss */])();
+      Object(__WEBPACK_IMPORTED_MODULE_5__css_index__["a" /* initCss */])();
+
+      var _this = this;
 
       Vue.directive('blue-validate', {
         bind: function bind(elm, binding) {
@@ -129,32 +133,66 @@ var Validate = function () {
             binding: binding
           });
         },
-        update: function update() {}
+        update: function update(elm, binding) {
+          var _this2 = this;
+
+          Vue.nextTick(function () {
+            __WEBPACK_IMPORTED_MODULE_1__update__["a" /* update */].call(_this2, {
+              elm: elm,
+              binding: binding
+            });
+          });
+        }
       });
 
       Vue.prototype.$validate = function ($event) {
-        $event.preventDefault();
-        var elm = $event.target;
-        return Object(__WEBPACK_IMPORTED_MODULE_3__validate_form_validate__["a" /* formValidate */])({
-          elm: elm
-        });
+        _this.validate($event);
       };
     }
   }, {
     key: 'setConfig',
     value: function setConfig(_config) {
-      this.config = __WEBPACK_IMPORTED_MODULE_6__utils__["a" /* default */].extend(this.config, _config);
+      this.config = __WEBPACK_IMPORTED_MODULE_7__utils__["a" /* default */].extend(this.config, _config);
+    }
+  }, {
+    key: 'validate',
+    value: function validate($event) {
+      var event = $event || window.event;
+      var elm = event.target;
+      var result = Object(__WEBPACK_IMPORTED_MODULE_4__validate_form_validate__["a" /* formValidate */])({
+        elm: elm
+      });
+      if (!result.status) {
+        event.preventDefault();
+      }
+      return result;
+    }
+
+    //add elm validate event
+
+  }, {
+    key: 'onValidate',
+    value: function onValidate(opts) {
+      var elm = opts.elm,
+          binding = opts.binding;
+
+      __WEBPACK_IMPORTED_MODULE_0__init__["a" /* init */].call(this, {
+        elm: elm,
+        binding: {
+          value: binding
+        }
+      });
     }
   }]);
 
   return Validate;
 }();
 
-__WEBPACK_IMPORTED_MODULE_1__type__["c" /* setType */].call(Validate);
+__WEBPACK_IMPORTED_MODULE_2__type__["c" /* setType */].call(Validate);
 
-__WEBPACK_IMPORTED_MODULE_2__info__["a" /* initInfo */].call(Validate);
+__WEBPACK_IMPORTED_MODULE_3__info__["a" /* initInfo */].call(Validate);
 
-Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
+Validate.config = __WEBPACK_IMPORTED_MODULE_6__config__["a" /* default */];
 
 /* harmony default export */ __webpack_exports__["a"] = (Validate);
 
@@ -163,121 +201,11 @@ Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = toast;
-/* harmony export (immutable) */ __webpack_exports__["a"] = createInfoWrap;
-var id = 0;
-var lastToast = void 0;
-var shade = void 0;
-var toastId = 'blueToast';
-
-//创建提示弹窗
-function toast(opts) {
-
-  if (lastToast) {
-    lastToast.elm.remove();
-    clearTimeout(lastToast.showTimer);
-    clearTimeout(lastToast.hideTimer);
-  }
-
-  if (!shade) {
-    shade = document.createElement('div');
-  }
-
-  var content = opts.content;
-
-  var toast = document.createElement('div');
-  var toastContent = document.createElement('div');
-
-  shade.className = 'blue-validate-toast-shade';
-  toast.className = 'blue-validate-toast';
-  toastContent.className = 'blue-validate-toast-content';
-
-  toastContent.innerHTML = content;
-  toast.id = toastId + ++id;
-  toast.appendChild(toastContent);
-  document.body.appendChild(toast);
-  document.body.appendChild(shade);
-
-  lastToast = {
-    elm: toast,
-    showTimer: 0,
-    hideTimer: 0
-  };
-
-  lastToast.showTimer = setTimeout(function () {
-    toast && toast.classList.add('show');
-  }, 0);
-
-  lastToast.hideTimer = setTimeout(function () {
-    toast && toast.classList.remove('show');
-    setTimeout(function () {
-      toast && (toast.remove(), shade.remove(), lastToast = null, shade = null);
-    }, 500);
-  }, 1500);
-}
-
-//创建提示的容器信息
-function createInfoWrap(opts) {
-  var info = document.createElement('div');
-  info.style.padding = '0 0 10px 0';
-  info.innerHTML = '' + opts.name + opts.info;
-  return info;
-}
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["c"] = setType;
-/* harmony export (immutable) */ __webpack_exports__["a"] = addType;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getTextTypeRegExp;
-function setType() {
-  this.types = {
-    "*": {
-      exp: /[\w\W]+/,
-      info: '内容不能为空'
-    },
-    "n": {
-      exp: /^\d+$/,
-      info: '请输入数字'
-    },
-    "m": {
-      exp: /^1[0-9]{10}$/,
-      info: '请输入手机号'
-    },
-    "e": {
-      exp: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-      info: '请输入email'
-    },
-    "url": {
-      exp: /^(\w+:\/\/)?\w+(\.\w+)+.*$/,
-      info: '请输入url'
-    }
-  };
-}
-
-function addType(typeName) {
-  var typeConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { exp: /.*?/ };
-
-  this.constructor.types[typeName] = typeConfig;
-}
-
-function getTextTypeRegExp() {
-  return (/text|password|email|number|date|month|week|time|datetime|datetime-local/ig
-  );
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* harmony export (immutable) */ __webpack_exports__["b"] = setValidate;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validate_index__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__event__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(3);
 
 
 
@@ -293,7 +221,6 @@ function setElmProperty(opts) {
       binding = opts.binding;
 
   if (!elm.validate) {
-
     elm.validate = {
       status: true,
       binding: binding,
@@ -355,6 +282,124 @@ function setValidate(opts, setType) {
 }
 
 /***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = toast;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createInfoWrap;
+var id = 0;
+var lastToast = void 0;
+var shade = void 0;
+var toastId = 'blueToast';
+
+//创建提示弹窗
+function toast(opts) {
+
+  if (lastToast) {
+    remove(lastToast.elm);
+    clearTimeout(lastToast.showTimer);
+    clearTimeout(lastToast.hideTimer);
+  }
+
+  if (!shade) {
+    shade = document.createElement('div');
+  }
+
+  var content = opts.content;
+
+  var toast = document.createElement('div');
+  var toastContent = document.createElement('div');
+
+  shade.className = 'blue-validate-toast-shade';
+  toast.className = 'blue-validate-toast';
+  toastContent.className = 'blue-validate-toast-content';
+
+  toastContent.innerHTML = content;
+  toast.id = toastId + ++id;
+  toast.appendChild(toastContent);
+  document.body.appendChild(toast);
+  document.body.appendChild(shade);
+
+  lastToast = {
+    elm: toast,
+    showTimer: 0,
+    hideTimer: 0
+  };
+
+  lastToast.showTimer = setTimeout(function () {
+    toast && toast.classList.add('show');
+  }, 0);
+
+  lastToast.hideTimer = setTimeout(function () {
+    toast && toast.classList.remove('show');
+    setTimeout(function () {
+      toast && (remove(toast), remove(shade), lastToast = null, shade = null);
+    }, 500);
+  }, 1500);
+}
+
+//创建提示的容器信息
+function createInfoWrap(opts) {
+  var info = document.createElement('div');
+  info.style.padding = '0 0 10px 0';
+  info.innerHTML = '' + opts.name + opts.info;
+  return info;
+}
+
+function remove(elm) {
+  try {
+    elm.remove();
+  } catch (e) {
+    elm.parentNode.removeChild(elm);
+  }
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["c"] = setType;
+/* harmony export (immutable) */ __webpack_exports__["a"] = addType;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getTextTypeRegExp;
+function setType() {
+  this.types = {
+    "*": {
+      exp: /[\w\W]+/,
+      info: '内容不能为空'
+    },
+    "n": {
+      exp: /^\d+$/,
+      info: '请输入数字'
+    },
+    "m": {
+      exp: /^1[0-9]{10}$/,
+      info: '请输入手机号'
+    },
+    "e": {
+      exp: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+      info: '请输入email'
+    },
+    "url": {
+      exp: /^(\w+:\/\/)?\w+(\.\w+)+.*$/,
+      info: '请输入url'
+    }
+  };
+}
+
+function addType(typeName) {
+  var typeConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { exp: /.*?/ };
+
+  this.constructor.types[typeName] = typeConfig;
+}
+
+function getTextTypeRegExp() {
+  return (/text|password|email|number|date|month|week|time|datetime|datetime-local/ig
+  );
+}
+
+/***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -364,7 +409,7 @@ function setValidate(opts, setType) {
 /* harmony export (immutable) */ __webpack_exports__["d"] = validateSelect;
 /* harmony export (immutable) */ __webpack_exports__["a"] = eventValidateToast;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_index__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(2);
 
 
 
@@ -382,7 +427,6 @@ function validate(opts) {
 
   errorStyle(elm, 'remove');
   resetElmStatus(elm);
-  //setDefaultExp(bindValue);
 
   for (; i < bindValue.validate.length; i++) {
     if (!elmValidate.status) break;
@@ -518,25 +562,6 @@ function errorStyle(elm, type) {
   }
 }
 
-//set default exp * in input type elm
-function setDefaultExp(bindValue) {
-  if (!bindValue) return;
-  var validate = bindValue.validate;
-  var hasDefaultExp = false;
-
-  validate.forEach(function (item) {
-    if (item.type === '*') {
-      hasDefaultExp = true;
-    }
-  });
-
-  if (!hasDefaultExp) {
-    validate.unshift({
-      type: "*"
-    });
-  }
-}
-
 /***/ }),
 /* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -592,9 +617,12 @@ function changeEvent(opts) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
-function initInfo() {
-  this.info = [];
+/* harmony export (immutable) */ __webpack_exports__["a"] = update;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(1);
+
+
+function update(opts) {
+  Object(__WEBPACK_IMPORTED_MODULE_0__init__["b" /* setValidate */])(opts, 'validate');
 }
 
 /***/ }),
@@ -602,10 +630,20 @@ function initInfo() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
+function initInfo() {
+  this.info = [];
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = formValidate;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_init__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__instance_type__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_init__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__instance_type__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__instance__ = __webpack_require__(0);
 
 
@@ -691,7 +729,7 @@ function focusFirstInputElm(elms) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -700,7 +738,7 @@ function initCss() {
   var id = 'blueValidate';
   var hasStyle = document.getElementById(id);
   if (hasStyle) return;
-  var validateCss = '.blue-validate-toast-shade{position:fixed;top:0;bottom:0;left:0;right:0;background-color:transparent}.blue-validate-toast{position:fixed;width:100%;z-index:1000;top:-100px;-webkit-transition:all .5s ease-in-out;-o-transition:all .5s ease-in-out;transition:all .5s ease-in-out;opacity:0}.blue-validate-toast.show{opacity:1;top:20px}.blue-validate-error{border:1px solid rgba(156,62,62,0.53)!important;background:rgba(175,34,34,0.08)!important}input[type="radio"].blue-validate-error,input[type="checkbox"].blue-validate-error{box-shadow:0 0 10px red}.blue-validate-toast .blue-validate-toast-content{width:100%;max-width:310px;padding:10px 10px 0 10px;margin:0 auto;text-align:left;line-height:1.418;color:white;background-color:rgba(0,0,0,0.38);border-radius:2px;font-size:13px}';
+  var validateCss = '.blue-validate-toast-shade{position:fixed;top:0;bottom:0;left:0;right:0;background-color:transparent}.blue-validate-toast{position:fixed;width:100%;z-index:1000;top:-100px;-webkit-transition:all .5s ease-in-out;-o-transition:all .5s ease-in-out;transition:all .5s ease-in-out;opacity:0}.blue-validate-toast.show{opacity:1;top:20px}.blue-validate-error{border:1px solid rgba(156,62,62,0.21)!important;background:rgba(175,34,34,0.08)!important}input[type="radio"].blue-validate-error,input[type="checkbox"].blue-validate-error{box-shadow:0 0 10px red}.blue-validate-toast .blue-validate-toast-content{width:100%;max-width:310px;padding:10px 10px 0 10px;margin:0 auto;text-align:left;line-height:1.418;color:white;background-color:rgba(0,0,0,0.38);border-radius:2px;font-size:13px}';
   var styleElm = document.createElement('style');
   styleElm.innerHTML = validateCss;
   styleElm.id = id;
@@ -708,7 +746,7 @@ function initCss() {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -728,7 +766,7 @@ var config = {
 /* harmony default export */ __webpack_exports__["a"] = (config);
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

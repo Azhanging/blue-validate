@@ -12,7 +12,6 @@ export function validate(opts) {
   //init status === true
   errorStyle(elm, 'remove');
   resetElmStatus(elm);
-  //setDefaultExp(bindValue);
 
   for (; i < bindValue.validate.length; i++) {
     if (!elmValidate.status) break;
@@ -137,25 +136,5 @@ function errorStyle(elm, type) {
     elm.classList.add(Validate.config.error.className);
   } else if (type == 'remove') {
     elm.classList.remove(Validate.config.error.className);
-  }
-}
-
-
-//set default exp * in input type elm
-function setDefaultExp(bindValue) {
-  if (!bindValue) return;
-  const validate = bindValue.validate;
-  let hasDefaultExp = false;
-
-  validate.forEach((item) => {
-    if (item.type === '*') {
-      hasDefaultExp = true;
-    }
-  });
-
-  if (!hasDefaultExp) {
-    validate.unshift({
-      type: "*"
-    });
   }
 }

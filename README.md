@@ -1,11 +1,11 @@
 # blue-validate
  
-###安装
+### 安装
 ```shell
 npm i blue-validate -S
 ```
 
-###在vue中使用
+### 在vue中使用
 ```javascript
 import BlueValidate from 'blue-validate';
 import Vue from 'vue';
@@ -21,7 +21,7 @@ Vue.use(BlueValidate);
 </form>
 ```
 
-###Vue.directive 通过自定义指来绑定验证
+### Vue.directive 通过自定义指来绑定验证
 
 ```html
     <!--text or textarea--> 
@@ -38,7 +38,7 @@ Vue.use(BlueValidate);
     
 ```
 
-###内置的验证规则
+### 内置的验证规则
 ```javascript
 BlueValidate.type = {
   "*": {
@@ -64,25 +64,25 @@ BlueValidate.type = {
 };
 ```
 
-###BlueValidate.config
+### BlueValidate.config
 默认的配置信息
 ```javascript
-    const config = {
-      error: {
-        className: 'blue-validate-error',
-        info: {
-          checked: '至少选择一项',
-          selected: '请选择选项'
-        },
-        isAllInfo: false,       //显示所有的错误提示
-        focusFirstElm: false,    //提交后将第一个text类型的elm focus
-        maximum: 5                //最大提示数量
-      }
-    };
+const config = {
+  error: {
+    className: 'blue-validate-error',
+    info: {
+      checked: '至少选择一项',
+      selected: '请选择选项'
+    },
+    isAllInfo: false,       //显示所有的错误提示
+    focusFirstElm: false,    //提交后将第一个text类型的elm focus
+    maximum: 5                //最大提示数量
+  }
+};
 ```
 
 
-####支持多种类型验证
+#### 支持多种类型验证
 
 可以使用内置的验证规则，挂载在BlueValidate.type中
 
@@ -90,27 +90,60 @@ BlueValidate.type = {
 
 也可以通过function进行验证，返回值为{status:Boolean,info:String}
 
+动态更新验证规则和动态更新更新验证状态
+
 #### BlueValidate 中的静态方法:
 
-#####添加验证类型
+### 添加验证类型
+```javascript
 BlueValidate.addType(typeName,{
     exp:RegExp,
     info:String
 });
+```
 
 ```javascript
-addType("*",{
+BlueValidate.addType("*",{
   exp:/[\w\W]+/g,
   info:'必填项'
 });
 ```
 
-#####BlueValidate.install
-Vue.use使用
+##### 动态添加验证事件 BlueValidate.onValidate(opts);
+```javascript
+BlueValidate.onValidate({
+    elm:elm,
+    binding:{
+        validate:[{
+            type:"*"
+        }],
+        name:'validate info name'
+    }
+});
+```
 
-#####BlueValidate.setConfig
-设置配置信息
-BlueValidate.setConfig(config);
+##### 设置配置信息 BlueValidate.setConfig(config);
+
+```javascript
+BlueValidate.setConfig({
+ error: {
+   className: 'blue-validate-error',
+   info: {
+     checked: '至少选择一项',
+     selected: '请选择选项'
+   },
+   isAllInfo: false,       //显示所有的错误提示
+   focusFirstElm: false,    //提交后将第一个text类型的elm focus
+   maximum: 5                //最大提示数量
+ }
+});
+```
+##### 提交验证 BlueValidate.validate(formElmEvent) || vm.$validate(formElmEvent);
+提交时的验证form表单内依赖blue-validate的element，没有name的redio和checkbox表单不作为验证的对象，避免异常必须给每个elm都加上name来区分。
+
+
+
+
 
 
 

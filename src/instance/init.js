@@ -11,7 +11,6 @@ export function init(opts) {
 function setElmProperty(opts) {
   const { elm, binding } = opts;
   if (!elm.validate) {
-
     elm.validate = {
       status: true,
       binding,
@@ -70,6 +69,7 @@ export function setValidate(opts, setType) {
     default:
       ;
   }
+
 }
 
 

@@ -1,6 +1,6 @@
 {
   "name": "blue-validate",
-  "version": "1.0.12",
+  "version": "1.1.1",
   "description": "blue-validate",
   "main": "./index.js",
   "scripts": {
@@ -12,7 +12,11 @@
   ],
   "keyword": [
     "validate",
-    "vue-validate"
+    "validatiy",
+    "validator",
+    "vue-validate",
+    "vue-validatiy",
+    "vue-validator"
   ],
   "author": "Blue",
   "license": "ISC",

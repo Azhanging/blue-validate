@@ -7,7 +7,7 @@ const toastId = 'blueToast';
 export function toast(opts) {
 
   if (lastToast) {
-    lastToast.elm.remove();
+    remove(lastToast.elm);
     clearTimeout(lastToast.showTimer);
     clearTimeout(lastToast.hideTimer);
   }
@@ -43,7 +43,7 @@ export function toast(opts) {
   lastToast.hideTimer = setTimeout(() => {
     toast && toast.classList.remove('show');
     setTimeout(() => {
-      toast && (toast.remove(), shade.remove(), lastToast = null, shade = null);
+      toast && (remove(toast), remove(shade), lastToast = null, shade = null);
     }, 500);
   }, 1500);
 
@@ -55,4 +55,12 @@ export function createInfoWrap(opts) {
   info.style.padding = `0 0 10px 0`;
   info.innerHTML = `${opts.name}${opts.info}`;
   return info;
+}
+
+function remove(elm) {
+  try{
+    elm.remove();
+  }catch(e){
+    elm.parentNode.removeChild(elm);
+  }
 }
