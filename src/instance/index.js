@@ -13,11 +13,14 @@ class Validate {
     addType.call(this, typeName, type);
   }
 
-  static install(Vue) {
+  static install(Vue, opts = {}) {
 
     initCss();
 
     const _this = this;
+
+    //set config
+    this.setConfig(opts);
 
     Vue.directive('blue-validate', {
       bind(elm, binding) {
@@ -37,7 +40,7 @@ class Validate {
     });
 
     Vue.prototype.$validate = function ($event) {
-      _this.validate($event);
+      return _this.validate($event);
     };
 
   }
@@ -52,7 +55,7 @@ class Validate {
     const result = formValidate({
       elm
     });
-    if(!result.status){
+    if (!result.status) {
       event.preventDefault();
     }
     return result;

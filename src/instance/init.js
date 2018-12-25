@@ -3,8 +3,10 @@ import { changeEvent, textEvent } from '../event';
 import { getTextTypeRegExp } from "./type";
 
 export function init(opts) {
-  setElmProperty(opts);
-  setValidate(opts, 'event');
+  const setStatus = setElmProperty(opts);
+  if(setStatus){
+    setValidate(opts, 'event');
+  }
 }
 
 //init form elm status property
@@ -26,7 +28,10 @@ function setElmProperty(opts) {
         validate: []
       };
     }
+
+    return true;
   }
+  return false;
 }
 
 //set elm event
@@ -69,7 +74,6 @@ export function setValidate(opts, setType) {
     default:
       ;
   }
-
 }
 
 

@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.1.1
+ * blue-validate.js 1.1.4
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Sat, 22 Dec 2018 08:05:30 GMT
+ * time:Tue, 25 Dec 2018 01:34:04 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -121,10 +121,15 @@ var Validate = function () {
   }, {
     key: 'install',
     value: function install(Vue) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
 
       Object(__WEBPACK_IMPORTED_MODULE_5__css_index__["a" /* initCss */])();
 
       var _this = this;
+
+      //set config
+      this.setConfig(opts);
 
       Vue.directive('blue-validate', {
         bind: function bind(elm, binding) {
@@ -146,7 +151,7 @@ var Validate = function () {
       });
 
       Vue.prototype.$validate = function ($event) {
-        _this.validate($event);
+        return _this.validate($event);
       };
     }
   }, {
@@ -211,8 +216,10 @@ Validate.config = __WEBPACK_IMPORTED_MODULE_6__config__["a" /* default */];
 
 
 function init(opts) {
-  setElmProperty(opts);
-  setValidate(opts, 'event');
+  var setStatus = setElmProperty(opts);
+  if (setStatus) {
+    setValidate(opts, 'event');
+  }
 }
 
 //init form elm status property
@@ -236,7 +243,10 @@ function setElmProperty(opts) {
         validate: []
       };
     }
+
+    return true;
   }
+  return false;
 }
 
 //set elm event

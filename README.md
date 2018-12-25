@@ -94,6 +94,13 @@ const config = {
 
 #### BlueValidate 中的静态方法:
 
+### BlueValidate.install
+
+在Vue.use中使用，配置相关的config，config参照上面的config信息
+```javascript
+ Vue.use(BlueValidate,BlueValidate.config);
+```
+
 ### 添加验证类型
 ```javascript
 BlueValidate.addType(typeName,{
