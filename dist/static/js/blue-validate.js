@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.1.4
+ * blue-validate.js 1.1.5
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Tue, 25 Dec 2018 01:34:04 GMT
+ * time:Tue, 25 Dec 2018 02:41:06 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -87,18 +87,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__update__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__info__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__validate_form_validate__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__css_index__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__config__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__type__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__info__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__validate_form_validate__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__css_index__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(11);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 
 
 
@@ -116,7 +114,7 @@ var Validate = function () {
   _createClass(Validate, null, [{
     key: 'addType',
     value: function addType(typeName, type) {
-      __WEBPACK_IMPORTED_MODULE_2__type__["a" /* addType */].call(this, typeName, type);
+      __WEBPACK_IMPORTED_MODULE_1__type__["a" /* addType */].call(this, typeName, type);
     }
   }, {
     key: 'install',
@@ -124,7 +122,7 @@ var Validate = function () {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 
-      Object(__WEBPACK_IMPORTED_MODULE_5__css_index__["a" /* initCss */])();
+      Object(__WEBPACK_IMPORTED_MODULE_4__css_index__["a" /* initCss */])();
 
       var _this = this;
 
@@ -137,39 +135,31 @@ var Validate = function () {
             elm: elm,
             binding: binding
           });
-        },
-        update: function update(elm, binding) {
-          var _this2 = this;
-
-          Vue.nextTick(function () {
-            __WEBPACK_IMPORTED_MODULE_1__update__["a" /* update */].call(_this2, {
-              elm: elm,
-              binding: binding
-            });
-          });
         }
       });
 
-      Vue.prototype.$validate = function ($event) {
-        return _this.validate($event);
+      //form {Event|FormElement}
+      Vue.prototype.$validate = function (form) {
+        var formElm = void 0;
+        if (form.nodeType) {
+          formElm = form;
+        } else {
+          formElm = form.target;
+        }
+        return _this.validate(formElm);
       };
     }
   }, {
     key: 'setConfig',
     value: function setConfig(_config) {
-      this.config = __WEBPACK_IMPORTED_MODULE_7__utils__["a" /* default */].extend(this.config, _config);
+      this.config = __WEBPACK_IMPORTED_MODULE_6__utils__["a" /* default */].extend(this.config, _config);
     }
   }, {
     key: 'validate',
-    value: function validate($event) {
-      var event = $event || window.event;
-      var elm = event.target;
-      var result = Object(__WEBPACK_IMPORTED_MODULE_4__validate_form_validate__["a" /* formValidate */])({
+    value: function validate(elm) {
+      var result = Object(__WEBPACK_IMPORTED_MODULE_3__validate_form_validate__["a" /* formValidate */])({
         elm: elm
       });
-      if (!result.status) {
-        event.preventDefault();
-      }
       return result;
     }
 
@@ -193,11 +183,11 @@ var Validate = function () {
   return Validate;
 }();
 
-__WEBPACK_IMPORTED_MODULE_2__type__["c" /* setType */].call(Validate);
+__WEBPACK_IMPORTED_MODULE_1__type__["c" /* setType */].call(Validate);
 
-__WEBPACK_IMPORTED_MODULE_3__info__["a" /* initInfo */].call(Validate);
+__WEBPACK_IMPORTED_MODULE_2__info__["a" /* initInfo */].call(Validate);
 
-Validate.config = __WEBPACK_IMPORTED_MODULE_6__config__["a" /* default */];
+Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
 
 /* harmony default export */ __webpack_exports__["a"] = (Validate);
 
@@ -206,11 +196,129 @@ Validate.config = __WEBPACK_IMPORTED_MODULE_6__config__["a" /* default */];
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = toast;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createInfoWrap;
+var id = 0;
+var lastToast = void 0;
+var shade = void 0;
+var toastId = 'blueToast';
+
+//创建提示弹窗
+function toast(opts) {
+
+  if (lastToast) {
+    remove(lastToast.elm);
+    clearTimeout(lastToast.showTimer);
+    clearTimeout(lastToast.hideTimer);
+  }
+
+  if (!shade) {
+    shade = document.createElement('div');
+  }
+
+  var content = opts.content;
+
+  var toast = document.createElement('div');
+  var toastContent = document.createElement('div');
+
+  shade.className = 'blue-validate-toast-shade';
+  toast.className = 'blue-validate-toast';
+  toastContent.className = 'blue-validate-toast-content';
+
+  toastContent.innerHTML = content;
+  toast.id = toastId + ++id;
+  toast.appendChild(toastContent);
+  document.body.appendChild(toast);
+  document.body.appendChild(shade);
+
+  lastToast = {
+    elm: toast,
+    showTimer: 0,
+    hideTimer: 0
+  };
+
+  lastToast.showTimer = setTimeout(function () {
+    toast && toast.classList.add('show');
+  }, 0);
+
+  lastToast.hideTimer = setTimeout(function () {
+    toast && toast.classList.remove('show');
+    setTimeout(function () {
+      toast && (remove(toast), remove(shade), lastToast = null, shade = null);
+    }, 500);
+  }, 1500);
+}
+
+//创建提示的容器信息
+function createInfoWrap(opts) {
+  var info = document.createElement('div');
+  info.style.padding = '0 0 10px 0';
+  info.innerHTML = '' + opts.name + opts.info;
+  return info;
+}
+
+function remove(elm) {
+  try {
+    elm.remove();
+  } catch (e) {
+    elm.parentNode.removeChild(elm);
+  }
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["c"] = setType;
+/* harmony export (immutable) */ __webpack_exports__["a"] = addType;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getTextTypeRegExp;
+function setType() {
+  this.types = {
+    "*": {
+      exp: /[\w\W]+/,
+      info: '内容不能为空'
+    },
+    "n": {
+      exp: /^\d+$/,
+      info: '请输入数字'
+    },
+    "m": {
+      exp: /^1[0-9]{10}$/,
+      info: '请输入手机号'
+    },
+    "e": {
+      exp: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+      info: '请输入email'
+    },
+    "url": {
+      exp: /^(\w+:\/\/)?\w+(\.\w+)+.*$/,
+      info: '请输入url'
+    }
+  };
+}
+
+function addType(typeName) {
+  var typeConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { exp: /.*?/ };
+
+  this.constructor.types[typeName] = typeConfig;
+}
+
+function getTextTypeRegExp() {
+  return (/text|password|email|number|date|month|week|time|datetime|datetime-local/ig
+  );
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* harmony export (immutable) */ __webpack_exports__["b"] = setValidate;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validate_index__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__event__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(2);
 
 
 
@@ -292,124 +400,6 @@ function setValidate(opts, setType) {
 }
 
 /***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = toast;
-/* harmony export (immutable) */ __webpack_exports__["a"] = createInfoWrap;
-var id = 0;
-var lastToast = void 0;
-var shade = void 0;
-var toastId = 'blueToast';
-
-//创建提示弹窗
-function toast(opts) {
-
-  if (lastToast) {
-    remove(lastToast.elm);
-    clearTimeout(lastToast.showTimer);
-    clearTimeout(lastToast.hideTimer);
-  }
-
-  if (!shade) {
-    shade = document.createElement('div');
-  }
-
-  var content = opts.content;
-
-  var toast = document.createElement('div');
-  var toastContent = document.createElement('div');
-
-  shade.className = 'blue-validate-toast-shade';
-  toast.className = 'blue-validate-toast';
-  toastContent.className = 'blue-validate-toast-content';
-
-  toastContent.innerHTML = content;
-  toast.id = toastId + ++id;
-  toast.appendChild(toastContent);
-  document.body.appendChild(toast);
-  document.body.appendChild(shade);
-
-  lastToast = {
-    elm: toast,
-    showTimer: 0,
-    hideTimer: 0
-  };
-
-  lastToast.showTimer = setTimeout(function () {
-    toast && toast.classList.add('show');
-  }, 0);
-
-  lastToast.hideTimer = setTimeout(function () {
-    toast && toast.classList.remove('show');
-    setTimeout(function () {
-      toast && (remove(toast), remove(shade), lastToast = null, shade = null);
-    }, 500);
-  }, 1500);
-}
-
-//创建提示的容器信息
-function createInfoWrap(opts) {
-  var info = document.createElement('div');
-  info.style.padding = '0 0 10px 0';
-  info.innerHTML = '' + opts.name + opts.info;
-  return info;
-}
-
-function remove(elm) {
-  try {
-    elm.remove();
-  } catch (e) {
-    elm.parentNode.removeChild(elm);
-  }
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["c"] = setType;
-/* harmony export (immutable) */ __webpack_exports__["a"] = addType;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getTextTypeRegExp;
-function setType() {
-  this.types = {
-    "*": {
-      exp: /[\w\W]+/,
-      info: '内容不能为空'
-    },
-    "n": {
-      exp: /^\d+$/,
-      info: '请输入数字'
-    },
-    "m": {
-      exp: /^1[0-9]{10}$/,
-      info: '请输入手机号'
-    },
-    "e": {
-      exp: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-      info: '请输入email'
-    },
-    "url": {
-      exp: /^(\w+:\/\/)?\w+(\.\w+)+.*$/,
-      info: '请输入url'
-    }
-  };
-}
-
-function addType(typeName) {
-  var typeConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { exp: /.*?/ };
-
-  this.constructor.types[typeName] = typeConfig;
-}
-
-function getTextTypeRegExp() {
-  return (/text|password|email|number|date|month|week|time|datetime|datetime-local/ig
-  );
-}
-
-/***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -419,18 +409,18 @@ function getTextTypeRegExp() {
 /* harmony export (immutable) */ __webpack_exports__["d"] = validateSelect;
 /* harmony export (immutable) */ __webpack_exports__["a"] = eventValidateToast;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_index__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
 
 
 
 //text
 function validate(opts) {
   var i = 0;
-  var elm = opts.elm,
-      binding = opts.binding;
+  var elm = opts.elm;
 
   var value = elm.value;
   var elmValidate = elm.validate;
+  var binding = elmValidate.binding;
   var bindValue = binding.value;
 
   //init status === true
@@ -461,11 +451,11 @@ function validate(opts) {
       elmValidate.status = exp.test(value);
     } else if (typeof type === 'function') {
       var _type = type(),
-          hadnlerInfo = _type.info,
+          handlerInfo = _type.info,
           status = _type.status;
 
       elmValidate.status = status || false;
-      info = hadnlerInfo;
+      info = handlerInfo;
       name = '';
     }
 
@@ -627,12 +617,9 @@ function changeEvent(opts) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = update;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(1);
-
-
-function update(opts) {
-  Object(__WEBPACK_IMPORTED_MODULE_0__init__["b" /* setValidate */])(opts, 'validate');
+/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
+function initInfo() {
+  this.info = [];
 }
 
 /***/ }),
@@ -640,20 +627,10 @@ function update(opts) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
-function initInfo() {
-  this.info = [];
-}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = formValidate;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_init__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__instance_type__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_init__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__instance_type__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__instance__ = __webpack_require__(0);
 
 
@@ -739,7 +716,7 @@ function focusFirstInputElm(elms) {
 }
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -756,7 +733,7 @@ function initCss() {
 }
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -776,7 +753,7 @@ var config = {
 /* harmony default export */ __webpack_exports__["a"] = (config);
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

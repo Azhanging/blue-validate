@@ -4,9 +4,10 @@ import { toast, createInfoWrap } from "../toast/index";
 //text
 export function validate(opts) {
   let i = 0;
-  const { elm, binding } = opts;
+  const { elm } = opts;
   const value = elm.value;
   const elmValidate = elm.validate;
+  const binding = elmValidate.binding;
   const { value: bindValue } = binding;
 
   //init status === true
@@ -33,9 +34,9 @@ export function validate(opts) {
       }
       elmValidate.status = exp.test(value);
     } else if (typeof type === 'function') {
-      const { info: hadnlerInfo, status } = type();
+      const { info: handlerInfo, status } = type();
       elmValidate.status = status || false;
-      info = hadnlerInfo;
+      info = handlerInfo;
       name = '';
     }
 

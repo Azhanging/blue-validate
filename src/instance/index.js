@@ -1,5 +1,4 @@
 import { init } from './init';
-import { update } from './update';
 import { setType, addType } from "./type";
 import { initInfo } from './info';
 import { formValidate } from '../validate/form-validate';
@@ -28,36 +27,29 @@ class Validate {
           elm,
           binding
         });
-      },
-      update(elm, binding) {
-        Vue.nextTick(() => {
-          update.call(this, {
-            elm,
-            binding
-          });
-        });
       }
     });
 
-    Vue.prototype.$validate = function ($event) {
-      return _this.validate($event);
+    //form {Event|FormElement}
+    Vue.prototype.$validate = function (form) {
+      let formElm;
+      if (form.nodeType) {
+        formElm = form;
+      } else {
+        formElm = form.target
+      }
+      return _this.validate(formElm);
     };
-
   }
 
   static setConfig(_config) {
     this.config = utils.extend(this.config, _config);
   }
 
-  static validate($event) {
-    const event = $event || window.event;
-    const elm = event.target;
+  static validate(elm) {
     const result = formValidate({
       elm
     });
-    if (!result.status) {
-      event.preventDefault();
-    }
     return result;
   }
 

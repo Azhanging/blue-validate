@@ -90,7 +90,7 @@ const config = {
 
 也可以通过function进行验证，返回值为{status:Boolean,info:String}
 
-动态更新验证规则和动态更新更新验证状态
+注：双向数据更新需要通过$validate方法验证当前表单的信息，因update钩子会在data更新后被执行，导致所有的验证都会走一次
 
 #### BlueValidate 中的静态方法:
 
@@ -145,8 +145,12 @@ BlueValidate.setConfig({
  }
 });
 ```
-##### 提交验证 BlueValidate.validate(formElmEvent) || vm.$validate(formElmEvent);
-提交时的验证form表单内依赖blue-validate的element，没有name的redio和checkbox表单不作为验证的对象，避免异常必须给每个elm都加上name来区分。
+##### 提交验证 BlueValidate.validate(formElmEvent|formElm) || vm.$validate(formElmEvent|formElm);
+接受的参数为form event或者为form elemenet,
+在双向数据中需要在$nextTick中执行$validate方法进行当前表单的全部认证，
+提交时的验证form表单内依赖blue-validate的element，
+没有name的redio和checkbox表单不作为验证的对象，
+避免异常必须给每个elm都加上name来区分。
 
 
 
