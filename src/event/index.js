@@ -1,5 +1,5 @@
 import {
-  eventValidateToast,
+  eventValidated,
   validate,
   validateRadioOrCheckbox,
   validateSelect
@@ -9,7 +9,7 @@ export function textEvent(opts) {
   const { elm } = opts;
   elm.addEventListener('blur', function () {
     validate(opts);
-    eventValidateToast(opts);
+    eventValidated(opts);
   });
 
   elm.addEventListener('input', function () {
@@ -22,12 +22,12 @@ export function changeEvent(opts) {
   if (elm.tagName == 'SELECT') {
     elm.addEventListener('change', function () {
       validateSelect(opts);
-      eventValidateToast(opts);
+      eventValidated(opts);
     });
   } else {
     elm.addEventListener('change', function () {
       validateRadioOrCheckbox(opts);
-      eventValidateToast(opts);
+      eventValidated(opts);
     });
   }
 }

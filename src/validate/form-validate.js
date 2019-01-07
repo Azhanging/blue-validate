@@ -6,14 +6,16 @@ import Validate from '../instance';
 
 //form validate
 export function formValidate(opts) {
+
   const { elm: formElm } = opts;
   const elms = formElm.elements;
+  const config = Validate.config;
   const error = [];
   const errorName = [];
   const _elms = [];
 
   let filterElms = [].filter.call(elms, (elm) => {
-    return elm.getAttribute('name');
+    return elm.getAttribute('name') && elm.validate;
   });
 
   for (let i = 0; i < filterElms.length; i++) {
@@ -43,25 +45,24 @@ export function formValidate(opts) {
 
   focusFirstInputElm(_elms);
 
-  toast({
-    content: (function () {
-
-      const config = Validate.config;
-
-      //is show all elms error info
-      if (config.error.isAllInfo) {
-        let dom = ``;
-        error.forEach((item, index) => {
-          if(config.error.maximum - 1 >= index){
-            dom += `${createInfoWrap(item).outerHTML}`;
-          }
-        });
-        return dom;
-      } else {
-        return createInfoWrap(error[0]).outerHTML;
-      }
-    })()
-  });
+  if (config.error.toast.status) {
+    toast({
+      content: (function () {
+        //is show all elms error info
+        if (config.error.toast.isAllInfo) {
+          let dom = ``;
+          error.forEach((item, index) => {
+            if (config.error.toast.maximum - 1 >= index) {
+              dom += `${createInfoWrap(item).outerHTML}`;
+            }
+          });
+          return dom;
+        } else {
+          return createInfoWrap(error[0]).outerHTML;
+        }
+      })()
+    });
+  }
 
   return {
     status: false,
@@ -72,7 +73,7 @@ export function formValidate(opts) {
 
 //first text type elm focus
 function focusFirstInputElm(elms) {
-  if (Validate.config.error.focusFirstElm) {
+  if (Validate.config.error.toast.focusFirstElm) {
     const firstElm = elms[0];
     const type = firstElm.getAttribute('type');
     if ((firstElm.tagName === 'TEXTAREA') || firstElm.tagName === 'INPUT' &&

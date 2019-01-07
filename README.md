@@ -25,7 +25,16 @@ Vue.use(BlueValidate);
 
 ```html
     <!--text or textarea--> 
-    <input type="text" name="username" v-blue-validate="{validate:[{type:'m'},{type:/.+/,info:'is empty'},{type:function(){return selfMethods();}}],name:'elm info name'}"/>
+    <input type="text" name="username" v-blue-validate="
+    {
+      validate:[
+          {type:'m'},         //配置内置验证
+          {type:/.+/,info:'is empty'},    //自定义验证
+          {type:function(){return selfMethods();}}  //fn的验证必须 return {status:Boolean,info:String};
+      ],
+      name:'elm info name',
+      validated:function(res){}   //在event处理完后执行的hook,{elm, status,name,info} = res;
+    }"/>
     <textarea v-blue-validate="{validate:[{type:'m'},{type:/.+/,info:'is empty'},{type:function(){return selfMethods();}}],name:'elm info name'}"></textarea>
     
     <!--radio-->
@@ -69,14 +78,18 @@ BlueValidate.type = {
 ```javascript
 const config = {
   error: {
-    className: 'blue-validate-error',
+    className: 'blue-validate-error',   //错误css
     info: {
       checked: '至少选择一项',
       selected: '请选择选项'
     },
-    isAllInfo: false,       //显示所有的错误提示
-    focusFirstElm: false,    //提交后将第一个text类型的elm focus
-    maximum: 5                //最大提示数量
+    toast: {
+      status: true,               //是否默认弹窗的提示
+      isAllInfo: false,           //显示所有的错误提示
+      focusFirstElm: false,       //提交后将第一个text类型的elm focus
+      maximum: 5,                 //最大提示数量
+      timer: 2000                 //错误提示的时间
+    }
   }
 };
 ```
@@ -86,11 +99,12 @@ const config = {
 
 可以使用内置的验证规则，挂载在BlueValidate.type中
 
-可以使用自动以的正则验证，需要添加info提示信息
+可以使用自定义的正则验证，需要添加info提示信息
 
 也可以通过function进行验证，返回值为{status:Boolean,info:String}
 
-注：双向数据更新需要通过$validate方法验证当前表单的信息，因update钩子会在data更新后被执行，导致所有的验证都会走一次
+注：双向数据更新需要通过$validate方法验证当前表单的信息，因update钩子会在data更新后被执行，
+导致所有的验证都会走一次，多个elm model同一个data时，未被事件触发的可能显示有问题，避免同一个data model多个elm
 
 #### BlueValidate 中的静态方法:
 
@@ -134,14 +148,18 @@ BlueValidate.onValidate({
 ```javascript
 BlueValidate.setConfig({
  error: {
-   className: 'blue-validate-error',
+   className: 'blue-validate-error',    //错误css
    info: {
      checked: '至少选择一项',
      selected: '请选择选项'
    },
-   isAllInfo: false,       //显示所有的错误提示
-   focusFirstElm: false,    //提交后将第一个text类型的elm focus
-   maximum: 5                //最大提示数量
+   toast: {
+     status: true,               //是否默认弹窗的提示
+     isAllInfo: false,           //显示所有的错误提示
+     focusFirstElm: false,       //提交后将第一个text类型的elm focus
+     maximum: 5,                 //最大提示数量
+     timer: 2000                 //错误提示的时间
+   }
  }
 });
 ```

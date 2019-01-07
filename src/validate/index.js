@@ -1,5 +1,6 @@
 import Validate from '../instance/index';
 import { toast, createInfoWrap } from "../toast/index";
+import utils from '../utils';
 
 //text
 export function validate(opts) {
@@ -122,10 +123,30 @@ function getName(elm) {
   return bindName || getAttr(elm, 'name');
 }
 
-//event emit toast
-export function eventValidateToast(opts) {
+//event validated
+export function eventValidated(opts) {
   const { elm } = opts;
-  if (elm.validate.status === true) return;
+  const elmValidate = elm.validate;
+  const validateStatus = elmValidate.status;
+  const errorConfig = Validate.config.error;
+
+  //event validate toast
+  if (!validateStatus && errorConfig.toast.status) {
+    eventValidatedToast(elm);
+  }
+
+  //hook event validated
+  utils.hook(null, elmValidate.binding.value.validated, [{
+    elm,
+    status: validateStatus,
+    name: getName(elm),
+    info: elmValidate.error.info
+  }]);
+
+}
+
+//event toast
+function eventValidatedToast(elm) {
   toast({
     content: createInfoWrap(elm.validate.error).outerHTML
   });

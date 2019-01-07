@@ -4,7 +4,7 @@ import { getTextTypeRegExp } from "./type";
 
 export function init(opts) {
   const setStatus = setElmProperty(opts);
-  if(setStatus){
+  if (setStatus) {
     setValidate(opts, 'event');
   }
 }
@@ -25,7 +25,10 @@ function setElmProperty(opts) {
 
     if (!binding.value) {
       binding.value = {
-        validate: []
+        validate: [],
+        name: '',
+        validated() {
+        }
       };
     }
 

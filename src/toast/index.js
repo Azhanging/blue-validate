@@ -1,3 +1,4 @@
+import Validate from '../instance'
 let id = 0;
 let lastToast;
 let shade;
@@ -45,7 +46,7 @@ export function toast(opts) {
     setTimeout(() => {
       toast && (remove(toast), remove(shade), lastToast = null, shade = null);
     }, 500);
-  }, 1500);
+  }, Validate.config.error.toast.timer);
 
 }
 

@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.1.5
+ * blue-validate.js 1.1.9
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Tue, 25 Dec 2018 02:41:06 GMT
+ * time:Mon, 07 Jan 2019 10:01:06 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "./static";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,11 +89,11 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__type__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__info__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__validate_form_validate__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__css_index__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__info__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__validate_form_validate__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__css_index__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(5);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -198,6 +198,8 @@ Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = toast;
 /* harmony export (immutable) */ __webpack_exports__["a"] = createInfoWrap;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance__ = __webpack_require__(0);
+
 var id = 0;
 var lastToast = void 0;
 var shade = void 0;
@@ -246,7 +248,7 @@ function toast(opts) {
     setTimeout(function () {
       toast && (remove(toast), remove(shade), lastToast = null, shade = null);
     }, 500);
-  }, 1500);
+  }, __WEBPACK_IMPORTED_MODULE_0__instance__["a" /* default */].config.error.toast.timer);
 }
 
 //创建提示的容器信息
@@ -317,7 +319,7 @@ function getTextTypeRegExp() {
 /* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* harmony export (immutable) */ __webpack_exports__["b"] = setValidate;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validate_index__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__event__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__event__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__type__ = __webpack_require__(2);
 
 
@@ -348,7 +350,9 @@ function setElmProperty(opts) {
 
     if (!binding.value) {
       binding.value = {
-        validate: []
+        validate: [],
+        name: '',
+        validated: function validated() {}
       };
     }
 
@@ -407,9 +411,11 @@ function setValidate(opts, setType) {
 /* harmony export (immutable) */ __webpack_exports__["b"] = validate;
 /* harmony export (immutable) */ __webpack_exports__["c"] = validateRadioOrCheckbox;
 /* harmony export (immutable) */ __webpack_exports__["d"] = validateSelect;
-/* harmony export (immutable) */ __webpack_exports__["a"] = eventValidateToast;
+/* harmony export (immutable) */ __webpack_exports__["a"] = eventValidated;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_index__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils__ = __webpack_require__(5);
+
 
 
 
@@ -543,11 +549,30 @@ function getName(elm) {
   return bindName || getAttr(elm, 'name');
 }
 
-//event emit toast
-function eventValidateToast(opts) {
+//event validated
+function eventValidated(opts) {
   var elm = opts.elm;
 
-  if (elm.validate.status === true) return;
+  var elmValidate = elm.validate;
+  var validateStatus = elmValidate.status;
+  var errorConfig = __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error;
+
+  //event validate toast
+  if (!validateStatus && errorConfig.toast.status) {
+    eventValidatedToast(elm);
+  }
+
+  //hook event validated
+  __WEBPACK_IMPORTED_MODULE_2__utils__["a" /* default */].hook(null, elmValidate.binding.value.validated, [{
+    elm: elm,
+    status: validateStatus,
+    name: getName(elm),
+    info: elmValidate.error.info
+  }]);
+}
+
+//event toast
+function eventValidatedToast(elm) {
   Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["b" /* toast */])({
     content: Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(elm.validate.error).outerHTML
   });
@@ -564,196 +589,6 @@ function errorStyle(elm, type) {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance__ = __webpack_require__(0);
-
-
-/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__instance__["a" /* default */]);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = textEvent;
-/* harmony export (immutable) */ __webpack_exports__["a"] = changeEvent;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validate__ = __webpack_require__(4);
-
-
-function textEvent(opts) {
-  var elm = opts.elm;
-
-  elm.addEventListener('blur', function () {
-    Object(__WEBPACK_IMPORTED_MODULE_0__validate__["b" /* validate */])(opts);
-    Object(__WEBPACK_IMPORTED_MODULE_0__validate__["a" /* eventValidateToast */])(opts);
-  });
-
-  elm.addEventListener('input', function () {
-    Object(__WEBPACK_IMPORTED_MODULE_0__validate__["b" /* validate */])(opts);
-  });
-}
-
-function changeEvent(opts) {
-  var elm = opts.elm;
-
-  if (elm.tagName == 'SELECT') {
-    elm.addEventListener('change', function () {
-      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["d" /* validateSelect */])(opts);
-      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["a" /* eventValidateToast */])(opts);
-    });
-  } else {
-    elm.addEventListener('change', function () {
-      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["c" /* validateRadioOrCheckbox */])(opts);
-      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["a" /* eventValidateToast */])(opts);
-    });
-  }
-}
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
-function initInfo() {
-  this.info = [];
-}
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = formValidate;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_init__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__instance_type__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__instance__ = __webpack_require__(0);
-
-
-
-
-
-
-//form validate
-function formValidate(opts) {
-  var formElm = opts.elm;
-
-  var elms = formElm.elements;
-  var error = [];
-  var errorName = [];
-  var _elms = [];
-
-  var filterElms = [].filter.call(elms, function (elm) {
-    return elm.getAttribute('name');
-  });
-
-  for (var i = 0; i < filterElms.length; i++) {
-    var elm = filterElms[i];
-    Object(__WEBPACK_IMPORTED_MODULE_0__instance_init__["b" /* setValidate */])({
-      elm: elm,
-      binding: elm.validate.binding
-    }, 'validate');
-    var elmValidate = elm.validate;
-    var elmError = elmValidate.error;
-    var name = elm.getAttribute('name');
-    if (elmValidate.status == false) {
-      if (errorName.indexOf(name) !== -1) continue;
-      errorName.push(name);
-      error.push(elmError);
-      _elms.push(elm);
-    }
-  }
-
-  //no has error toast
-  if (error.length <= 0) {
-    return {
-      status: true,
-      error: []
-    };
-  }
-
-  focusFirstInputElm(_elms);
-
-  Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["b" /* toast */])({
-    content: function () {
-
-      var config = __WEBPACK_IMPORTED_MODULE_3__instance__["a" /* default */].config;
-
-      //is show all elms error info
-      if (config.error.isAllInfo) {
-        var dom = '';
-        error.forEach(function (item, index) {
-          if (config.error.maximum - 1 >= index) {
-            dom += '' + Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(item).outerHTML;
-          }
-        });
-        return dom;
-      } else {
-        return Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(error[0]).outerHTML;
-      }
-    }()
-  });
-
-  return {
-    status: false,
-    error: error
-  };
-}
-
-//first text type elm focus
-function focusFirstInputElm(elms) {
-  if (__WEBPACK_IMPORTED_MODULE_3__instance__["a" /* default */].config.error.focusFirstElm) {
-    var firstElm = elms[0];
-    var type = firstElm.getAttribute('type');
-    if (firstElm.tagName === 'TEXTAREA' || firstElm.tagName === 'INPUT' && (!type || Object(__WEBPACK_IMPORTED_MODULE_2__instance_type__["b" /* getTextTypeRegExp */])().test(type))) {
-      firstElm.focus();
-    }
-  }
-}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = initCss;
-function initCss() {
-  var id = 'blueValidate';
-  var hasStyle = document.getElementById(id);
-  if (hasStyle) return;
-  var validateCss = '.blue-validate-toast-shade{position:fixed;top:0;bottom:0;left:0;right:0;background-color:transparent}.blue-validate-toast{position:fixed;width:100%;z-index:1000;top:-100px;-webkit-transition:all .5s ease-in-out;-o-transition:all .5s ease-in-out;transition:all .5s ease-in-out;opacity:0}.blue-validate-toast.show{opacity:1;top:20px}.blue-validate-error{border:1px solid rgba(156,62,62,0.21)!important;background:rgba(175,34,34,0.08)!important}input[type="radio"].blue-validate-error,input[type="checkbox"].blue-validate-error{box-shadow:0 0 10px red}.blue-validate-toast .blue-validate-toast-content{width:100%;max-width:310px;padding:10px 10px 0 10px;margin:0 auto;text-align:left;line-height:1.418;color:white;background-color:rgba(0,0,0,0.38);border-radius:2px;font-size:13px}';
-  var styleElm = document.createElement('style');
-  styleElm.innerHTML = validateCss;
-  styleElm.id = id;
-  document.head.appendChild(styleElm);
-}
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var config = {
-  error: {
-    className: 'blue-validate-error',
-    info: {
-      checked: '至少选择一项',
-      selected: '请选择选项'
-    },
-    isAllInfo: false, //显示所有的错误提示
-    focusFirstElm: false, //提交后将第一个text类型的elm focus
-    maximum: 5 //最大提示数量
-  }
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (config);
-
-/***/ }),
-/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -960,6 +795,200 @@ var Utils = function () {
 var utils = new Utils();
 
 /* harmony default export */ __webpack_exports__["a"] = (utils);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance__ = __webpack_require__(0);
+
+
+/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__instance__["a" /* default */]);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = textEvent;
+/* harmony export (immutable) */ __webpack_exports__["a"] = changeEvent;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validate__ = __webpack_require__(4);
+
+
+function textEvent(opts) {
+  var elm = opts.elm;
+
+  elm.addEventListener('blur', function () {
+    Object(__WEBPACK_IMPORTED_MODULE_0__validate__["b" /* validate */])(opts);
+    Object(__WEBPACK_IMPORTED_MODULE_0__validate__["a" /* eventValidated */])(opts);
+  });
+
+  elm.addEventListener('input', function () {
+    Object(__WEBPACK_IMPORTED_MODULE_0__validate__["b" /* validate */])(opts);
+  });
+}
+
+function changeEvent(opts) {
+  var elm = opts.elm;
+
+  if (elm.tagName == 'SELECT') {
+    elm.addEventListener('change', function () {
+      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["d" /* validateSelect */])(opts);
+      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["a" /* eventValidated */])(opts);
+    });
+  } else {
+    elm.addEventListener('change', function () {
+      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["c" /* validateRadioOrCheckbox */])(opts);
+      Object(__WEBPACK_IMPORTED_MODULE_0__validate__["a" /* eventValidated */])(opts);
+    });
+  }
+}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
+function initInfo() {
+  this.info = [];
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = formValidate;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance_init__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__toast_index__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__instance_type__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__instance__ = __webpack_require__(0);
+
+
+
+
+
+
+//form validate
+function formValidate(opts) {
+  var formElm = opts.elm;
+
+  var elms = formElm.elements;
+  var config = __WEBPACK_IMPORTED_MODULE_3__instance__["a" /* default */].config;
+  var error = [];
+  var errorName = [];
+  var _elms = [];
+
+  var filterElms = [].filter.call(elms, function (elm) {
+    return elm.getAttribute('name') && elm.validate;
+  });
+
+  for (var i = 0; i < filterElms.length; i++) {
+    var elm = filterElms[i];
+    Object(__WEBPACK_IMPORTED_MODULE_0__instance_init__["b" /* setValidate */])({
+      elm: elm,
+      binding: elm.validate.binding
+    }, 'validate');
+    var elmValidate = elm.validate;
+    var elmError = elmValidate.error;
+    var name = elm.getAttribute('name');
+    if (elmValidate.status == false) {
+      if (errorName.indexOf(name) !== -1) continue;
+      errorName.push(name);
+      error.push(elmError);
+      _elms.push(elm);
+    }
+  }
+
+  //no has error toast
+  if (error.length <= 0) {
+    return {
+      status: true,
+      error: []
+    };
+  }
+
+  focusFirstInputElm(_elms);
+
+  if (config.error.toast.status) {
+    Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["b" /* toast */])({
+      content: function () {
+        //is show all elms error info
+        if (config.error.toast.isAllInfo) {
+          var dom = '';
+          error.forEach(function (item, index) {
+            if (config.error.toast.maximum - 1 >= index) {
+              dom += '' + Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(item).outerHTML;
+            }
+          });
+          return dom;
+        } else {
+          return Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(error[0]).outerHTML;
+        }
+      }()
+    });
+  }
+
+  return {
+    status: false,
+    error: error
+  };
+}
+
+//first text type elm focus
+function focusFirstInputElm(elms) {
+  if (__WEBPACK_IMPORTED_MODULE_3__instance__["a" /* default */].config.error.toast.focusFirstElm) {
+    var firstElm = elms[0];
+    var type = firstElm.getAttribute('type');
+    if (firstElm.tagName === 'TEXTAREA' || firstElm.tagName === 'INPUT' && (!type || Object(__WEBPACK_IMPORTED_MODULE_2__instance_type__["b" /* getTextTypeRegExp */])().test(type))) {
+      firstElm.focus();
+    }
+  }
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = initCss;
+function initCss() {
+  var id = 'blueValidate';
+  var hasStyle = document.getElementById(id);
+  if (hasStyle) return;
+  var validateCss = '.blue-validate-toast-shade{position:fixed;z-index:9999;top:0;bottom:0;left:0;right:0;background-color:transparent}.blue-validate-toast{position:fixed;width:100%;z-index:1000;top:-100px;-webkit-transition:all .5s ease-in-out;-o-transition:all .5s ease-in-out;transition:all .5s ease-in-out;opacity:0}.blue-validate-toast.show{opacity:1;top:20px}.blue-validate-error{border:1px solid rgba(156,62,62,0.21)!important;background:rgba(175,34,34,0.08)!important}input[type="radio"].blue-validate-error,input[type="checkbox"].blue-validate-error{box-shadow:0 0 10px red}.blue-validate-toast .blue-validate-toast-content{width:100%;max-width:310px;padding:10px 10px 0 10px;margin:0 auto;text-align:left;line-height:1.418;color:white;background-color:rgba(0,0,0,0.38);border-radius:2px;font-size:13px}';
+  var styleElm = document.createElement('style');
+  styleElm.innerHTML = validateCss;
+  styleElm.id = id;
+  document.head.appendChild(styleElm);
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var config = {
+  error: {
+    className: 'blue-validate-error', //错误css
+    info: {
+      checked: '至少选择一项',
+      selected: '请选择选项'
+    },
+    toast: {
+      status: true, //是否默认弹窗的提示
+      isAllInfo: false, //显示所有的错误提示
+      focusFirstElm: false, //提交后将第一个text类型的elm focus
+      maximum: 5, //最大提示数量
+      timer: 2000 //错误提示的时间
+    }
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (config);
 
 /***/ })
 /******/ ])["default"];
