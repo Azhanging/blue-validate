@@ -33,6 +33,7 @@ export function validate(opts) {
       } else if (type instanceof RegExp) {
         exp = type;
       }
+      exp.lastIndex = 0;
       elmValidate.status = exp.test(value);
     } else if (typeof type === 'function') {
       const { info: handlerInfo, status } = type();

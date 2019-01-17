@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.1.9
+ * blue-validate.js 1.1.11
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Mon, 07 Jan 2019 10:01:06 GMT
+ * time:Thu, 17 Jan 2019 06:57:15 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -303,7 +303,7 @@ function setType() {
 function addType(typeName) {
   var typeConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { exp: /.*?/ };
 
-  this.constructor.types[typeName] = typeConfig;
+  this.types[typeName] = typeConfig;
 }
 
 function getTextTypeRegExp() {
@@ -454,6 +454,7 @@ function validate(opts) {
       } else if (type instanceof RegExp) {
         exp = type;
       }
+      exp.lastIndex = 0;
       elmValidate.status = exp.test(value);
     } else if (typeof type === 'function') {
       var _type = type(),

@@ -38,12 +38,12 @@ Vue.use(BlueValidate);
     <textarea v-blue-validate="{validate:[{type:'m'},{type:/.+/,info:'is empty'},{type:function(){return selfMethods();}}],name:'elm info name'}"></textarea>
     
     <!--radio-->
-    <input type="radio" name="radio" v-blue-validate="name:'elm info name'}"/>
-    <input type="radio" name="radio" v-blue-validate="name:'elm info name'}"/>
+    <input type="radio" name="radio" v-blue-validate="{name:'elm info name'}"/>
+    <input type="radio" name="radio" v-blue-validate="{name:'elm info name'}"/>
     
     <!--checkbox-->
-    <input type="radio" name="checkbox" v-blue-validate="name:'elm info name'}"/>
-    <input type="radio" name="checkbox" v-blue-validate="name:'elm info name'}"/>
+    <input type="radio" name="checkbox" v-blue-validate="{name:'elm info name'}"/>
+    <input type="radio" name="checkbox" v-blue-validate="{name:'elm info name'}"/>
     
 ```
 

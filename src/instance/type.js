@@ -24,7 +24,7 @@ export function setType() {
 }
 
 export function addType(typeName, typeConfig = { exp: /.*?/ }) {
-  this.constructor.types[typeName] = typeConfig;
+  this.types[typeName] = typeConfig;
 }
 
 export function getTextTypeRegExp(){
