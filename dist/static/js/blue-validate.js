@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.1.11
+ * blue-validate.js 1.1.12
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Thu, 17 Jan 2019 06:57:15 GMT
+ * time:Wed, 17 Jul 2019 16:17:04 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -457,7 +457,7 @@ function validate(opts) {
       exp.lastIndex = 0;
       elmValidate.status = exp.test(value);
     } else if (typeof type === 'function') {
-      var _type = type(),
+      var _type = type(value),
           handlerInfo = _type.info,
           status = _type.status;
 

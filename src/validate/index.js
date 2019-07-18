@@ -36,7 +36,7 @@ export function validate(opts) {
       exp.lastIndex = 0;
       elmValidate.status = exp.test(value);
     } else if (typeof type === 'function') {
-      const { info: handlerInfo, status } = type();
+      const { info: handlerInfo, status } = type(value);
       elmValidate.status = status || false;
       info = handlerInfo;
       name = '';
