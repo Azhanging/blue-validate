@@ -1,5 +1,5 @@
 import Validate from '../instance/index';
-import { toast, createInfoWrap } from "../toast/index";
+import { toast, createMessageWrap } from "../toast/index";
 import utils from '../utils';
 
 //text
@@ -17,35 +17,29 @@ export function validate(opts) {
 
   for (; i < bindValue.validate.length; i++) {
     if (!elmValidate.status) break;
-    let exp;
+    let currentExp;
     const item = bindValue.validate[i];
-    let { type, info } = item;
-    let name = getName(elm);
-    if (typeof type === 'string' || type instanceof RegExp) {
-      if (typeof type === 'string') {
-        const validateType = Validate.types[type];
-        if (validateType) {
-          exp = validateType.exp;
-          info = validateType.info;
-        } else {
-          continue;
-        }
-      } else if (type instanceof RegExp) {
-        exp = type;
+    let { exp, message } = item;
+    if (typeof exp === 'string' || exp instanceof RegExp) {
+      if (typeof exp === 'string') {
+        const validateType = Validate.types[exp];
+        if (!validateType) continue;
+        currentExp = validateType.exp;
+        message = validateType.message;
+      } else if (exp instanceof RegExp) {
+        currentExp = exp;
       }
-      exp.lastIndex = 0;
-      elmValidate.status = exp.test(value);
-    } else if (typeof type === 'function') {
-      const { info: handlerInfo, status } = type(value);
+      currentExp.lastIndex = 0;
+      elmValidate.status = currentExp.test(value);
+    } else if (typeof exp === 'function') {
+      const { message: handlerMessage, status } = exp(value);
       elmValidate.status = status || false;
-      info = handlerInfo;
-      name = '';
+      message = handlerMessage;
     }
 
     if (!elmValidate.status) {
-      info && (elmValidate.error = {
-        name,
-        info,
+      message && (elmValidate.error = {
+        message,
         elm
       });
       errorStyle(elm, 'add');
@@ -73,8 +67,7 @@ export function validateRadioOrCheckbox(opts) {
   if (index <= 0) {
     elmValidate.status = false;
     elmValidate.error = {
-      name: getName(elm),
-      info: Validate.config.error.info.checked,
+      message: Validate.config.error.message.checked,
       elm
     };
     [].forEach.call(findSameNameElms, (elm) => {
@@ -92,8 +85,7 @@ export function validateSelect(opts) {
   if (!elm.value) {
     elmValidate.status = false;
     elmValidate.error = {
-      name: getName(elm),
-      info: Validate.config.error.info.selected,
+      message: Validate.config.error.message.selected,
       elm
     };
     errorStyle(elm, 'add');
@@ -105,8 +97,7 @@ function resetElmStatus(elm) {
   const elmValidate = elm.validate;
   elmValidate.status = true;
   elmValidate.error = {
-    name: '',
-    info: '',
+    message: '',
     elm
   };
 }
@@ -114,14 +105,6 @@ function resetElmStatus(elm) {
 //get elm attr
 function getAttr(elm, attr) {
   return elm.getAttribute(attr);
-}
-
-//get form elm name
-function getName(elm) {
-  const binding = elm.validate.binding;
-  const bindValue = binding.value;
-  const bindName = bindValue && bindValue.name;
-  return bindName || getAttr(elm, 'name');
 }
 
 //event validated
@@ -140,8 +123,7 @@ export function eventValidated(opts) {
   utils.hook(null, elmValidate.binding.value.validated, [{
     elm,
     status: validateStatus,
-    name: getName(elm),
-    info: elmValidate.error.info
+    message: elmValidate.error.message
   }]);
 
 }
@@ -149,15 +131,15 @@ export function eventValidated(opts) {
 //event toast
 function eventValidatedToast(elm) {
   toast({
-    content: createInfoWrap(elm.validate.error).outerHTML
+    content: createMessageWrap(elm.validate.error).outerHTML
   });
 }
 
 //error set style
 function errorStyle(elm, type) {
-  if (type == 'add') {
+  if (type === 'add') {
     elm.classList.add(Validate.config.error.className);
-  } else if (type == 'remove') {
+  } else if (type === 'remove') {
     elm.classList.remove(Validate.config.error.className);
   }
 }

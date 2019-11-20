@@ -1,6 +1,6 @@
 import { init } from './init';
 import { setType, addType } from "./type";
-import { initInfo } from './info';
+import { initMessage } from './message';
 import { formValidate } from '../validate/form-validate';
 import { initCss } from "../css/index";
 import config from '../config';
@@ -67,7 +67,7 @@ class Validate {
 
 setType.call(Validate);
 
-initInfo.call(Validate);
+initMessage.call(Validate);
 
 Validate.config = config;
 

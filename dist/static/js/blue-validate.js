@@ -1,10 +1,10 @@
 /*!
  * 
- * blue-validate.js 1.1.12
+ * blue-validate.js 1.1.13
  * (c) 2016-2017 Blue
  * Released under the MIT License.
  * https://github.com/azhanging/blue-validate
- * time:Wed, 17 Jul 2019 16:17:04 GMT
+ * time:Wed, 20 Nov 2019 09:13:28 GMT
  * 		
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -89,7 +89,7 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__init__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__type__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__info__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__message__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__validate_form_validate__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__css_index__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__config__ = __webpack_require__(11);
@@ -185,7 +185,7 @@ var Validate = function () {
 
 __WEBPACK_IMPORTED_MODULE_1__type__["c" /* setType */].call(Validate);
 
-__WEBPACK_IMPORTED_MODULE_2__info__["a" /* initInfo */].call(Validate);
+__WEBPACK_IMPORTED_MODULE_2__message__["a" /* initMessage */].call(Validate);
 
 Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
 
@@ -197,7 +197,7 @@ Validate.config = __WEBPACK_IMPORTED_MODULE_5__config__["a" /* default */];
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = toast;
-/* harmony export (immutable) */ __webpack_exports__["a"] = createInfoWrap;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createMessageWrap;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__instance__ = __webpack_require__(0);
 
 var id = 0;
@@ -252,11 +252,11 @@ function toast(opts) {
 }
 
 //创建提示的容器信息
-function createInfoWrap(opts) {
-  var info = document.createElement('div');
-  info.style.padding = '0 0 10px 0';
-  info.innerHTML = '' + opts.name + opts.info;
-  return info;
+function createMessageWrap(opts) {
+  var message = document.createElement('div');
+  message.style.padding = '0 0 10px 0';
+  message.innerHTML = '' + opts.message;
+  return message;
 }
 
 function remove(elm) {
@@ -279,23 +279,23 @@ function setType() {
   this.types = {
     "*": {
       exp: /[\w\W]+/,
-      info: '内容不能为空'
+      message: '内容不能为空'
     },
     "n": {
       exp: /^\d+$/,
-      info: '请输入数字'
+      message: '请输入数字'
     },
     "m": {
       exp: /^1[0-9]{10}$/,
-      info: '请输入手机号'
+      message: '请输入手机号'
     },
     "e": {
       exp: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-      info: '请输入email'
+      message: '请输入email'
     },
     "url": {
       exp: /^(\w+:\/\/)?\w+(\.\w+)+.*$/,
-      info: '请输入url'
+      message: '请输入url'
     }
   };
 }
@@ -342,8 +342,7 @@ function setElmProperty(opts) {
       status: true,
       binding: binding,
       error: {
-        name: '',
-        info: '',
+        message: '',
         elm: elm
       }
     };
@@ -351,7 +350,6 @@ function setElmProperty(opts) {
     if (!binding.value) {
       binding.value = {
         validate: [],
-        name: '',
         validated: function validated() {}
       };
     }
@@ -370,31 +368,31 @@ function setValidate(opts, setType) {
 
   switch (tagName) {
     case 'TEXTAREA':
-      if (setType == 'event') {
+      if (setType === 'event') {
         Object(__WEBPACK_IMPORTED_MODULE_1__event__["b" /* textEvent */])(opts);
-      } else if (setType == 'validate') {
+      } else if (setType === 'validate') {
         Object(__WEBPACK_IMPORTED_MODULE_0__validate_index__["b" /* validate */])(opts);
       }
       break;
     case 'INPUT':
       if (null == type || Object(__WEBPACK_IMPORTED_MODULE_2__type__["b" /* getTextTypeRegExp */])().test(type)) {
-        if (setType == 'event') {
+        if (setType === 'event') {
           Object(__WEBPACK_IMPORTED_MODULE_1__event__["b" /* textEvent */])(opts);
-        } else if (setType == 'validate') {
+        } else if (setType === 'validate') {
           Object(__WEBPACK_IMPORTED_MODULE_0__validate_index__["b" /* validate */])(opts);
         }
       } else if (/checkbox|radio/ig.test(type)) {
-        if (setType == 'event') {
+        if (setType === 'event') {
           Object(__WEBPACK_IMPORTED_MODULE_1__event__["a" /* changeEvent */])(opts);
-        } else if (setType == 'validate') {
+        } else if (setType === 'validate') {
           Object(__WEBPACK_IMPORTED_MODULE_0__validate_index__["c" /* validateRadioOrCheckbox */])(opts);
         }
       }
       break;
     case 'SELECT':
-      if (setType == 'event') {
+      if (setType === 'event') {
         Object(__WEBPACK_IMPORTED_MODULE_1__event__["a" /* changeEvent */])(opts);
-      } else if (setType == 'validate') {
+      } else if (setType === 'validate') {
         Object(__WEBPACK_IMPORTED_MODULE_0__validate_index__["d" /* validateSelect */])(opts);
       }
       break;
@@ -436,40 +434,34 @@ function validate(opts) {
 
   for (; i < bindValue.validate.length; i++) {
     if (!elmValidate.status) break;
-    var exp = void 0;
+    var currentExp = void 0;
     var item = bindValue.validate[i];
-    var type = item.type,
-        info = item.info;
+    var exp = item.exp,
+        message = item.message;
 
-    var name = getName(elm);
-    if (typeof type === 'string' || type instanceof RegExp) {
-      if (typeof type === 'string') {
-        var validateType = __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].types[type];
-        if (validateType) {
-          exp = validateType.exp;
-          info = validateType.info;
-        } else {
-          continue;
-        }
-      } else if (type instanceof RegExp) {
-        exp = type;
+    if (typeof exp === 'string' || exp instanceof RegExp) {
+      if (typeof exp === 'string') {
+        var validateType = __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].types[exp];
+        if (!validateType) continue;
+        currentExp = validateType.exp;
+        message = validateType.message;
+      } else if (exp instanceof RegExp) {
+        currentExp = exp;
       }
-      exp.lastIndex = 0;
-      elmValidate.status = exp.test(value);
-    } else if (typeof type === 'function') {
-      var _type = type(value),
-          handlerInfo = _type.info,
-          status = _type.status;
+      currentExp.lastIndex = 0;
+      elmValidate.status = currentExp.test(value);
+    } else if (typeof exp === 'function') {
+      var _exp = exp(value),
+          handlerMessage = _exp.message,
+          status = _exp.status;
 
       elmValidate.status = status || false;
-      info = handlerInfo;
-      name = '';
+      message = handlerMessage;
     }
 
     if (!elmValidate.status) {
-      info && (elmValidate.error = {
-        name: name,
-        info: info,
+      message && (elmValidate.error = {
+        message: message,
         elm: elm
       });
       errorStyle(elm, 'add');
@@ -498,8 +490,7 @@ function validateRadioOrCheckbox(opts) {
   if (index <= 0) {
     elmValidate.status = false;
     elmValidate.error = {
-      name: getName(elm),
-      info: __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error.info.checked,
+      message: __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error.message.checked,
       elm: elm
     };
     [].forEach.call(findSameNameElms, function (elm) {
@@ -518,8 +509,7 @@ function validateSelect(opts) {
   if (!elm.value) {
     elmValidate.status = false;
     elmValidate.error = {
-      name: getName(elm),
-      info: __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error.info.selected,
+      message: __WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error.message.selected,
       elm: elm
     };
     errorStyle(elm, 'add');
@@ -531,8 +521,7 @@ function resetElmStatus(elm) {
   var elmValidate = elm.validate;
   elmValidate.status = true;
   elmValidate.error = {
-    name: '',
-    info: '',
+    message: '',
     elm: elm
   };
 }
@@ -540,14 +529,6 @@ function resetElmStatus(elm) {
 //get elm attr
 function getAttr(elm, attr) {
   return elm.getAttribute(attr);
-}
-
-//get form elm name
-function getName(elm) {
-  var binding = elm.validate.binding;
-  var bindValue = binding.value;
-  var bindName = bindValue && bindValue.name;
-  return bindName || getAttr(elm, 'name');
 }
 
 //event validated
@@ -567,23 +548,22 @@ function eventValidated(opts) {
   __WEBPACK_IMPORTED_MODULE_2__utils__["a" /* default */].hook(null, elmValidate.binding.value.validated, [{
     elm: elm,
     status: validateStatus,
-    name: getName(elm),
-    info: elmValidate.error.info
+    message: elmValidate.error.message
   }]);
 }
 
 //event toast
 function eventValidatedToast(elm) {
   Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["b" /* toast */])({
-    content: Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(elm.validate.error).outerHTML
+    content: Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createMessageWrap */])(elm.validate.error).outerHTML
   });
 }
 
 //error set style
 function errorStyle(elm, type) {
-  if (type == 'add') {
+  if (type === 'add') {
     elm.classList.add(__WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error.className);
-  } else if (type == 'remove') {
+  } else if (type === 'remove') {
     elm.classList.remove(__WEBPACK_IMPORTED_MODULE_0__instance_index__["a" /* default */].config.error.className);
   }
 }
@@ -852,9 +832,9 @@ function changeEvent(opts) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = initInfo;
-function initInfo() {
-  this.info = [];
+/* harmony export (immutable) */ __webpack_exports__["a"] = initMessage;
+function initMessage() {
+  this.message = [];
 }
 
 /***/ }),
@@ -896,7 +876,7 @@ function formValidate(opts) {
     var elmValidate = elm.validate;
     var elmError = elmValidate.error;
     var name = elm.getAttribute('name');
-    if (elmValidate.status == false) {
+    if (elmValidate.status === false) {
       if (errorName.indexOf(name) !== -1) continue;
       errorName.push(name);
       error.push(elmError);
@@ -917,17 +897,17 @@ function formValidate(opts) {
   if (config.error.toast.status) {
     Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["b" /* toast */])({
       content: function () {
-        //is show all elms error info
-        if (config.error.toast.isAllInfo) {
+        //is show all elms error message
+        if (config.error.toast.isAllMessage) {
           var dom = '';
           error.forEach(function (item, index) {
             if (config.error.toast.maximum - 1 >= index) {
-              dom += '' + Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(item).outerHTML;
+              dom += '' + Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createMessageWrap */])(item).outerHTML;
             }
           });
           return dom;
         } else {
-          return Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createInfoWrap */])(error[0]).outerHTML;
+          return Object(__WEBPACK_IMPORTED_MODULE_1__toast_index__["a" /* createMessageWrap */])(error[0]).outerHTML;
         }
       }()
     });
@@ -975,13 +955,13 @@ function initCss() {
 var config = {
   error: {
     className: 'blue-validate-error', //错误css
-    info: {
+    message: {
       checked: '至少选择一项',
       selected: '请选择选项'
     },
     toast: {
       status: true, //是否默认弹窗的提示
-      isAllInfo: false, //显示所有的错误提示
+      isAllMessage: false, //显示所有的错误提示
       focusFirstElm: false, //提交后将第一个text类型的elm focus
       maximum: 5, //最大提示数量
       timer: 2000 //错误提示的时间

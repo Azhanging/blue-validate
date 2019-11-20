@@ -51,11 +51,11 @@ export function toast(opts) {
 }
 
 //创建提示的容器信息
-export function createInfoWrap(opts) {
-  const info = document.createElement('div');
-  info.style.padding = `0 0 10px 0`;
-  info.innerHTML = `${opts.name}${opts.info}`;
-  return info;
+export function createMessageWrap(opts) {
+  const message = document.createElement('div');
+  message.style.padding = `0 0 10px 0`;
+  message.innerHTML = `${opts.message}`;
+  return message;
 }
 
 function remove(elm) {

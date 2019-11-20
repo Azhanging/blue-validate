@@ -1,6 +1,6 @@
 import { setValidate } from '../instance/init';
 import { toast } from '../toast/index';
-import { createInfoWrap } from "../toast/index";
+import { createMessageWrap } from "../toast/index";
 import { getTextTypeRegExp } from "../instance/type";
 import Validate from '../instance';
 
@@ -27,7 +27,7 @@ export function formValidate(opts) {
     const elmValidate = elm.validate;
     const elmError = elmValidate.error;
     const name = elm.getAttribute('name');
-    if (elmValidate.status == false) {
+    if (elmValidate.status === false) {
       if (errorName.indexOf(name) !== -1) continue;
       errorName.push(name);
       error.push(elmError);
@@ -48,17 +48,17 @@ export function formValidate(opts) {
   if (config.error.toast.status) {
     toast({
       content: (function () {
-        //is show all elms error info
-        if (config.error.toast.isAllInfo) {
+        //is show all elms error message
+        if (config.error.toast.isAllMessage) {
           let dom = ``;
           error.forEach((item, index) => {
             if (config.error.toast.maximum - 1 >= index) {
-              dom += `${createInfoWrap(item).outerHTML}`;
+              dom += `${createMessageWrap(item).outerHTML}`;
             }
           });
           return dom;
         } else {
-          return createInfoWrap(error[0]).outerHTML;
+          return createMessageWrap(error[0]).outerHTML;
         }
       })()
     });

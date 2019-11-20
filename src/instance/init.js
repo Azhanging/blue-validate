@@ -17,8 +17,7 @@ function setElmProperty(opts) {
       status: true,
       binding,
       error: {
-        name: '',
-        info: '',
+        message: '',
         elm: elm
       }
     };
@@ -26,7 +25,6 @@ function setElmProperty(opts) {
     if (!binding.value) {
       binding.value = {
         validate: [],
-        name: '',
         validated() {
         }
       };
@@ -46,31 +44,31 @@ export function setValidate(opts, setType) {
 
   switch (tagName) {
     case 'TEXTAREA':
-      if (setType == 'event') {
+      if (setType === 'event') {
         textEvent(opts);
-      } else if (setType == 'validate') {
+      } else if (setType === 'validate') {
         validate(opts);
       }
       break;
     case 'INPUT':
       if (null == type || getTextTypeRegExp().test(type)) {
-        if (setType == 'event') {
+        if (setType === 'event') {
           textEvent(opts);
-        } else if (setType == 'validate') {
+        } else if (setType === 'validate') {
           validate(opts);
         }
       } else if (/checkbox|radio/ig.test(type)) {
-        if (setType == 'event') {
+        if (setType === 'event') {
           changeEvent(opts);
-        } else if (setType == 'validate') {
+        } else if (setType === 'validate') {
           validateRadioOrCheckbox(opts);
         }
       }
       break;
     case 'SELECT':
-      if (setType == 'event') {
+      if (setType === 'event') {
         changeEvent(opts);
-      } else if (setType == 'validate') {
+      } else if (setType === 'validate') {
         validateSelect(opts);
       }
       break;

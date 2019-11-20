@@ -29,21 +29,21 @@ Vue.use(BlueValidate);
     {
       validate:[
           {type:'m'},         //配置内置验证
-          {type:/.+/,info:'is empty'},    //自定义验证
-          {type:function(){return selfMethods();}}  //fn的验证必须 return {status:Boolean,info:String};
+          {type:/.+/,message:'is empty'},    //自定义验证
+          {type:function(){return selfMethods();}}  //fn的验证必须 return {status:Boolean,message:String};
       ],
-      name:'elm info name',
-      validated:function(res){}   //在event处理完后执行的hook,{elm, status,name,info} = res;
+      name:'elm message name',
+      validated:function(res){}   //在event处理完后执行的hook,{elm, status,name,message} = res;
     }"/>
-    <textarea v-blue-validate="{validate:[{type:'m'},{type:/.+/,info:'is empty'},{type:function(){return selfMethods();}}],name:'elm info name'}"></textarea>
+    <textarea v-blue-validate="{validate:[{type:'m'},{type:/.+/,message:'is empty'},{type:function(){return selfMethods();}}],name:'elm message name'}"></textarea>
     
     <!--radio-->
-    <input type="radio" name="radio" v-blue-validate="{name:'elm info name'}"/>
-    <input type="radio" name="radio" v-blue-validate="{name:'elm info name'}"/>
+    <input type="radio" name="radio" v-blue-validate="{name:'elm message name'}"/>
+    <input type="radio" name="radio" v-blue-validate="{name:'elm message name'}"/>
     
     <!--checkbox-->
-    <input type="radio" name="checkbox" v-blue-validate="{name:'elm info name'}"/>
-    <input type="radio" name="checkbox" v-blue-validate="{name:'elm info name'}"/>
+    <input type="radio" name="checkbox" v-blue-validate="{name:'elm message name'}"/>
+    <input type="radio" name="checkbox" v-blue-validate="{name:'elm message name'}"/>
     
 ```
 
@@ -52,23 +52,23 @@ Vue.use(BlueValidate);
 BlueValidate.type = {
   "*": {
     exp: /[\w\W]+/,
-    info: '内容不能为空'
+    message: '内容不能为空'
   },
   "n": {
     exp: /^\d+$/,
-    info: '请输入数字'
+    message: '请输入数字'
   },
   "m": {
     exp: /^1[0-9]{10}$/,
-    info: '请输入手机号'
+    message: '请输入手机号'
   },
   "e": {
     exp: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-    info: '请输入email'
+    message: '请输入email'
   },
   "url": {
     exp: /^(\w+:\/\/)?\w+(\.\w+)+.*$/,
-    info: '请输入url'
+    message: '请输入url'
   }
 };
 ```
@@ -79,7 +79,7 @@ BlueValidate.type = {
 const config = {
   error: {
     className: 'blue-validate-error',   //错误css
-    info: {
+    message: {
       checked: '至少选择一项',
       selected: '请选择选项'
     },
@@ -99,9 +99,9 @@ const config = {
 
 可以使用内置的验证规则，挂载在BlueValidate.type中
 
-可以使用自定义的正则验证，需要添加info提示信息
+可以使用自定义的正则验证，需要添加message提示信息
 
-也可以通过function进行验证，返回值为{status:Boolean,info:String}
+也可以通过function进行验证，返回值为{status:Boolean,message:String}
 
 注：双向数据更新需要通过$validate方法验证当前表单的信息，因update钩子会在data更新后被执行，
 导致所有的验证都会走一次，多个elm model同一个data时，未被事件触发的可能显示有问题，避免同一个data model多个elm
@@ -119,14 +119,14 @@ const config = {
 ```javascript
 BlueValidate.addType(typeName,{
     exp:RegExp,
-    info:String
+    message:String
 });
 ```
 
 ```javascript
 BlueValidate.addType("*",{
   exp:/[\w\W]+/g,
-  info:'必填项'
+  message:'必填项'
 });
 ```
 
@@ -138,7 +138,7 @@ BlueValidate.onValidate({
         validate:[{
             type:"*"
         }],
-        name:'validate info name'
+        name:'validate message name'
     }
 });
 ```
@@ -149,7 +149,7 @@ BlueValidate.onValidate({
 BlueValidate.setConfig({
  error: {
    className: 'blue-validate-error',    //错误css
-   info: {
+   message: {
      checked: '至少选择一项',
      selected: '请选择选项'
    },
