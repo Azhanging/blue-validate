@@ -30,7 +30,7 @@
     "html-webpack-plugin": "^3.2.0",
     "uglify-js": "^2.8.28",
     "uglifyjs-webpack-plugin": "^1.1.1",
-    "webpack": "3.10.0",
+    "webpack": "5.94.0",
     "webpack-dev-server": "^2.11.2",
     "webpack-merge": "^4.1.2"
   },
